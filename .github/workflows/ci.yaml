@@ -1,0 +1,26 @@
+name: CI
+
+on:
+  push:
+  workflow_dispatch:
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        # 将来的なVercelの対応を想定
+        node: [16, 18]
+    name: Node ${{ matrix.node }} で型チェックとテスト
+    steps:
+      - uses: actions/checkout@v3
+      - name: Setup node
+        uses: actions/setup-node@v3
+        with:
+          node-version: ${{ matrix.node }}
+          cache: 'yarn'
+      - run: yarn install --frozen-lockfile
+      - name: 型チェック
+        run: yarn run typecheck
+      - name: テスト
+        run: yarn run test
