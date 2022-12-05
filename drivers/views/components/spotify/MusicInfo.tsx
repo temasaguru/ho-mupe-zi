@@ -13,19 +13,19 @@ const MusicInfo = ({ track, hasError }: MusicInfoProps) => {
   const spotifyUrlOrSearch =
     spotifyUrl ?? `https://www.google.com/search?q=${track?.name}`;
   return (
-    <div className="flex min-w-[200px] flex-col items-start">
+    <div className="flex min-w-[200px] flex-col items-start text-xl">
       {/* items-startで寄せないと、リンクのエリアが無駄に右に広がる */}
       <a
         href={spotifyUrlOrSearch}
         target="_blank"
         rel="noreferrer"
-        className="text-xl font-bold"
+        className="text-2xl font-bold"
       >
         {/* inline-blockにしないと、文字がない場所もリンクになってしまう */}
         {track ? track.name : hasError ? '(曲名取得失敗)' : '(Loading...)'}
       </a>
       <a href={albumUrlOrSearch} target="_blank" rel="noreferrer">
-        <div className="text-yellow-800">
+        <div className="text-yellow-800 dark:text-yellow-200">
           {track
             ? track.album.name
             : hasError
@@ -33,7 +33,7 @@ const MusicInfo = ({ track, hasError }: MusicInfoProps) => {
             : '(Loading...)'}
         </div>
       </a>
-      <div className="flex flex-wrap gap-2 text-blue-800">
+      <div className="flex flex-wrap gap-2 text-blue-800 dark:text-blue-200">
         {track ? (
           <ArtistList artists={track.artists} />
         ) : hasError ? (

@@ -1,4 +1,4 @@
-name: CI
+name: CI (テストとLighthouseスコアチェック)
 
 on:
   push:
@@ -24,3 +24,25 @@ jobs:
         run: yarn run typecheck
       - name: テスト
         run: yarn run test
+  # lighthouse:
+  #   # https://c-a-p-engineer.github.io/tech/2022/01/01/github-actions-lghthouse/
+  #   # テストしてこのジョブを準備する間にVercelのデプロイができるはず
+  #   needs: test
+  #   runs-on: ubuntu-latest
+  #   steps:
+  #     - uses: actions/checkout@master
+  #     - name: Lighthouse
+  #       uses: foo-software/lighthouse-check-action@master
+  #       id: lighthouseCheck
+  #       with:
+  #         urls: 'https://www.temasa.guru'
+  #     - name: Lighthouseのスコアを確認する
+  #       uses: foo-software/lighthouse-check-status-action@master
+  #       with:
+  #         lighthouseCheckResults: ${{ steps.lighthouseCheck.outputs.lighthouseCheckResults }}
+  #         minPerformanceScore: '80'
+  #         minAccessibilityScore: '90'
+  #         minBestPracticesScore: '90'
+  #         minSeoScore: '90'
+  #     - if: failure()
+  #       run: echo "しっかりしろ！なんだこの杜撰な製品は"

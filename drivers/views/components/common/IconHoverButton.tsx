@@ -11,7 +11,7 @@ const IconHoverButton = ({
   return (
     <a
       className={twMerge(
-        'flex h-12 w-12 items-center justify-center rounded-full p-2 text-3xl hover:bg-gray-200',
+        'flex h-12 w-12 items-center justify-center rounded-full p-2 text-3xl hover:bg-gray-200 dark:hover:bg-gray-700',
         className
       )}
       {...props}

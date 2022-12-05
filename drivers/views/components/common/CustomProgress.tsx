@@ -22,14 +22,18 @@ const CustomProgress = ({
   return (
     <div
       className={twMerge(
-        'relative h-4 w-full overflow-hidden rounded-xl bg-black',
+        // Windowsハイコントラストで真っ黒な背景に混ざって見えなくなってしまうので白枠線
+        'relative h-4 w-full overflow-hidden rounded-xl border border-white bg-black',
         className
       )}
       {...props}
+      // Windowsハイコントラストで見えなくなってしまうので
+      style={{ forcedColorAdjust: 'none' }}
     >
       <div
         style={{ width }}
         className={twMerge(
+          //
           'absolute top-0 left-0 h-full bg-blue-500',
           valueBarClassName
         )}

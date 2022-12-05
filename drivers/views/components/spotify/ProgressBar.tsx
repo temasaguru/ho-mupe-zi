@@ -82,7 +82,9 @@ const ProgressBar = ({
   return (
     <div className="flex grow flex-col-reverse items-center gap-y-3 self-stretch">
       <div className="flex w-full items-center justify-between gap-x-3">
-        <div className="w-12">{progressString}</div>
+        <div aria-label="曲の再生時間" className="w-12">
+          {progressString}
+        </div>
         <CustomProgress
           className={twMerge(
             'min-w-[12rem] flex-grow',
@@ -91,7 +93,9 @@ const ProgressBar = ({
           value={progressPercent ?? 0}
           max={100}
         />
-        <div className="w-12">{durationString}</div>
+        <div aria-label="曲の長さ" className="w-12">
+          {durationString}
+        </div>
       </div>
       <div className="flex items-center gap-x-3 text-sm text-gray-800">
         <button

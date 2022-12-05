@@ -8,8 +8,6 @@ interface AlbumArtProps {
 }
 
 const AlbumArt = ({ loading = 'lazy', track, hasError }: AlbumArtProps) => {
-  const spotifyUrlOrSearch =
-    track?.spotifyUrl ?? `https://www.google.com/search?q=${track?.name}`;
   /**
    * この画像サイズは300x300
    */
@@ -17,16 +15,7 @@ const AlbumArt = ({ loading = 'lazy', track, hasError }: AlbumArtProps) => {
   return (
     <>
       {track ? (
-        <a
-          href={spotifyUrlOrSearch}
-          target="_blank"
-          // groupでホバーを制御
-          className="group flex h-full w-full cursor-pointer"
-          rel="noreferrer"
-          aria-label={`${track.name}のジャケット (クリックで${
-            track.spotifyUrl ? 'Spotifyを開く' : '検索する'
-          })`}
-        >
+        <>
           {albumImage ? (
             <>
               {albumImage.url.startsWith('https://i.scdn.co') ? (
@@ -38,7 +27,7 @@ const AlbumArt = ({ loading = 'lazy', track, hasError }: AlbumArtProps) => {
                   loading={loading}
                   // 遅延読み込みでない場合はpriorityが必要 https://nextjs.org/docs/api-reference/next/image#priority
                   priority={loading !== 'lazy'}
-                  className="w-full transition-transform duration-300 group-hover:z-20 group-hover:scale-125"
+                  className="w-full"
                 />
               ) : (
                 <>
@@ -61,7 +50,7 @@ const AlbumArt = ({ loading = 'lazy', track, hasError }: AlbumArtProps) => {
               CD取り込みなど)
             </div>
           )}
-        </a>
+        </>
       ) : hasError ? (
         <div className="flex h-full w-full bg-red-800 text-center shadow-xl">
           <div className="m-auto p-4">取得失敗</div>
