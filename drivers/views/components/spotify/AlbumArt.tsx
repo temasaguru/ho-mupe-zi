@@ -1,0 +1,77 @@
+import Image, { ImageProps } from 'next/image';
+import { SpotifyTrackJSON } from '@/application/interfaces/json/spotify/common';
+
+interface AlbumArtProps {
+  loading?: ImageProps['loading'];
+  track: SpotifyTrackJSON | null;
+  hasError: boolean;
+}
+
+const AlbumArt = ({ loading = 'lazy', track, hasError }: AlbumArtProps) => {
+  const spotifyUrlOrSearch =
+    track?.spotifyUrl ?? `https://www.google.com/search?q=${track?.name}`;
+  /**
+   * この画像サイズは300x300
+   */
+  const albumImage = track?.album.image;
+  return (
+    <>
+      {track ? (
+        <a
+          href={spotifyUrlOrSearch}
+          target="_blank"
+          // groupでホバーを制御
+          className="group flex h-full w-full cursor-pointer"
+          rel="noreferrer"
+          aria-label={`${track.name}のジャケット (クリックで${
+            track.spotifyUrl ? 'Spotifyを開く' : '検索する'
+          })`}
+        >
+          {albumImage ? (
+            <>
+              {albumImage.url.startsWith('https://i.scdn.co') ? (
+                <Image
+                  width={300}
+                  height={300}
+                  src={albumImage?.url}
+                  alt={track?.album.name ?? ''}
+                  loading={loading}
+                  // 遅延読み込みでない場合はpriorityが必要 https://nextjs.org/docs/api-reference/next/image#priority
+                  priority={loading !== 'lazy'}
+                  className="w-full transition-transform duration-300 group-hover:z-20 group-hover:scale-125"
+                />
+              ) : (
+                <>
+                  {/* 多分i.scdn.coがSpotifyのCDNなんだろうが、突然変えられると対応できないのでimgで対処 */}
+                  {/* eslint-disable-next-line @next/next/no-img-element */}
+                  <img
+                    src={albumImage?.url}
+                    alt={track?.album.name ?? ''}
+                    className="w-full"
+                  />
+                </>
+              )}
+            </>
+          ) : (
+            <div className="m-auto p-4 text-xs">
+              ジャケットなし
+              <br />
+              (iTunes Store or
+              <br />
+              CD取り込みなど)
+            </div>
+          )}
+        </a>
+      ) : hasError ? (
+        <div className="flex h-full w-full bg-red-800 text-center shadow-xl">
+          <div className="m-auto p-4">取得失敗</div>
+        </div>
+      ) : (
+        <div className="flex h-full w-full bg-gray-100 text-center shadow-xl">
+          <div className="m-auto p-4">Loading...</div>
+        </div>
+      )}
+    </>
+  );
+};
+export default AlbumArt;
