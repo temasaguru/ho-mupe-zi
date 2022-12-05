@@ -1,4 +1,4 @@
-# ho-mepe-zi
+# ho-mupe-zi
 
 個人ホームページです。
 
