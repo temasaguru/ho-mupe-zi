@@ -9,7 +9,8 @@ jobs:
     runs-on: ubuntu-latest
     name: Node 18で型チェックとテスト
     steps:
-      - uses: actions/checkout@v3
+      - name: チェックアウト
+        uses: actions/checkout@v3
       - name: Setup node
         uses: actions/setup-node@v3
         with:
@@ -25,6 +26,8 @@ jobs:
     runs-on: ubuntu-latest
     name: Lighthouse分析と結果コメント投稿
     steps:
+      - name: チェックアウト
+        uses: actions/checkout@v3
       - name: プレビューURLを取得
         id: capture_preview_url
         uses: aaimio/vercel-preview-url-action@v1
