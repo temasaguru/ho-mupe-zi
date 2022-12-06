@@ -4,10 +4,13 @@ interface ArtistListProps {
   artists: SpotifyArtistJSON[];
 }
 
+/**
+ * スマホを考慮して、4人以上の場合は「...」で省略する
+ */
 const ArtistList = ({ artists }: ArtistListProps) => {
   return (
-    <div className="flex flex-wrap gap-x-2">
-      {artists.map((artist, n) => {
+    <div aria-label="アーティスト名" className="leading-8">
+      {artists.slice(0, 3).map((artist, n) => {
         // 現在聞いている曲がローカルファイルの場合もあり得るので注意
         const action = artist.spotifyUrl ? 'Spotifyで開く' : '検索する';
         const spotifyUrl = artist?.spotifyUrl;
@@ -18,13 +21,15 @@ const ArtistList = ({ artists }: ArtistListProps) => {
             key={n}
             href={spotifyUrlOrSearch}
             target="_blank"
-            aria-label={`クリックで${artist.name}を${action}`}
+            aria-label={`${artist.name}を${action}`}
             rel="noreferrer"
+            className="mr-3"
           >
             {artist.name}
           </a>
         );
       })}
+      {artists.length > 3 && <span aria-label="4人目移行は省略">...</span>}
     </div>
   );
 };

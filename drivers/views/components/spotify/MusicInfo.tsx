@@ -31,7 +31,7 @@ const MusicInfo = ({ track, hasError }: MusicInfoProps) => {
         target="_blank"
         rel="noreferrer"
       >
-        <div className="text-yellow-800 dark:text-yellow-200">
+        <div className="pr-8 text-yellow-800 dark:text-yellow-200">
           {track
             ? track.album.name
             : hasError
@@ -39,10 +39,7 @@ const MusicInfo = ({ track, hasError }: MusicInfoProps) => {
             : '(Loading...)'}
         </div>
       </a>
-      <div
-        aria-label="アーティスト名"
-        className="flex flex-wrap gap-2 text-blue-800 dark:text-blue-200"
-      >
+      <div className="flex flex-wrap gap-2 text-blue-800 dark:text-blue-200">
         {track ? (
           <ArtistList artists={track.artists} />
         ) : hasError ? (
