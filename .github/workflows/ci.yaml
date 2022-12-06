@@ -41,7 +41,7 @@ jobs:
         with:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           # アクションが想定してるコメントと2022年12月7日の形式が違うっぽいので修正
-          preview_url_regexp: '\[Visit Preview\]\((.*)\)'
+          preview_url_regexp: '\[Visit Preview\]\(((.*).app)\)'
       - name: チェックアウト
         uses: actions/checkout@v3
       - name: Lighthouseでページを分析
