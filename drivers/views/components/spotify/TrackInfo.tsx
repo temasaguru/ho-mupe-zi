@@ -31,7 +31,7 @@ const TrackInfo = ({
   };
   return (
     <div
-      tabIndex={n + 1} // 0だと選択できない
+      tabIndex={0} // 0じゃないと、全ての要素にtabIndexが必要になってしまう
       onClick={onClick}
       onKeyDown={handleOnKeyDown}
       className="group relative w-1/2 cursor-pointer focus:border-8 focus:border-blue-500 md:w-1/3 lg:w-1/4 xl:w-1/5 2xl:w-1/6"
@@ -50,8 +50,8 @@ const TrackInfo = ({
           <ArtistList artists={track.artists} />
         </div>
         <a
-          // 同じindexになってしまうが、これなら開いている時にTabでリンクを選べる
-          tabIndex={n + 1}
+          // tabIndexを付けることで開いている時にTabでリンクを選べる
+          tabIndex={0}
           href={spotifyUrlOrSearch}
           target="_blank"
           className="block rounded-xl bg-black p-1 px-2 text-center font-bold text-white dark:bg-white dark:text-black"
