@@ -2,7 +2,7 @@ name: CI (テストとLighthouseスコアチェック)
 
 on:
   issue_comment:
-    types: [created, edited]
+    types: [edited]
 
 jobs:
   test:
@@ -30,6 +30,8 @@ jobs:
         uses: aaimio/vercel-preview-url-action@v1
         with:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          # アクションが想定してるコメントと2022年12月7日の形式が違うっぽいので修正
+          preview_url_regexp: '\[Visit Preview\]\((.*)\)'
       - name: Lighthouseでページを分析
         id: lighthouse_audit
         uses: treosh/lighthouse-ci-action@v3
