@@ -7,6 +7,10 @@ import {
 } from 'react-hook-form';
 import { twMerge } from 'tailwind-merge';
 
+/**
+ * 以下、今の所使ってないが、一応置いておく
+ */
+
 type InputBaseProps = {
   label?: string;
   errorMassage?: string;

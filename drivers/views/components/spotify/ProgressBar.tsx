@@ -99,7 +99,8 @@ const ProgressBar = ({
       </div>
       <div className="flex items-center gap-x-3 text-sm text-gray-800">
         <button
-          disabled={!result}
+          // Tabキーで選択不能に
+          disabled={true}
           className={twMerge(
             'inline-flex h-12 w-12 cursor-default cursor-not-allowed items-center justify-center rounded-full bg-white',
             result?.isPlaying && 'bg-green-500'

@@ -4,6 +4,9 @@
 
 ## アクセシビリティ対応状況
 
+- スクリーンリーダーを使いながら開発しています。
+  - 読み上げ機能で内容が分かるように最大限配慮しています。
+- 全ての要素をキーボードで選択できます。
 - ダークモードに対応しています。
 - macOSのコントラストを上げる機能に対応しています。
 - Windowsのハイコントラストモードに対応しています。
@@ -28,6 +31,32 @@
 |UPSTASH_REDIS_REST_TOKEN|UpstashのRedisのAPIトークン|
 |ENCRYPTION_KEY|`openssl rand 16 -hex` (これ変えるとトークン保存し直しになるので注意)|
 |REVALIDATE_SECONDS|ライブラリのキャッシュ有効期限秒|
+
+## Special Thanks
+
+### VercelプレビューURLでLighthouse分析
+
+https://github.com/OskarAhl/Lighthouse-github-action-comment
+
+### TypeScript + Clean Architecture
+
+https://qiita.com/sadnessOjisan/items/ea5590efa3f55ef56edd
+
+### 暗号化
+
+https://www.greptips.com/posts/1345/
+
+### Jest環境構築
+
+https://zenn.dev/tkengineer/articles/8cf29c7c8131ba
+
+https://zenn.dev/miruoon_892/articles/e42e64fbb55137
+
+### react-hook-form
+
+https://tech.nri-net.com/entry/react_hook_form_and_yup
+
+https://zenn.dev/yuitosato/articles/292f13816993ef
 
 ---
 
