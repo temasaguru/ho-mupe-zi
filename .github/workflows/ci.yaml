@@ -5,33 +5,33 @@ on:
   workflow_dispatch:
 
 jobs:
-  # test:
-  #   runs-on: ubuntu-latest
-  #   name: Node 16で型チェックとテスト
-  #   steps:
-  #     - uses: actions/checkout@v3
-  #     - name: Setup node
-  #       uses: actions/setup-node@v3
-  #       with:
-  #         node-version: 16
-  #         cache: 'yarn'
-  #     - run: yarn install --frozen-lockfile
-  #     - name: 型チェック
-  #       run: yarn run typecheck
-  #     - name: テスト
-  #       run: yarn run test
-  capture_vercel_url:
+  test:
+    runs-on: ubuntu-latest
+    name: Node 16で型チェックとテスト
+    steps:
+      - uses: actions/checkout@v3
+      - name: Setup node
+        uses: actions/setup-node@v3
+        with:
+          node-version: 16
+          cache: 'yarn'
+      - run: yarn install --frozen-lockfile
+      - name: 型チェック
+        run: yarn run typecheck
+      - name: テスト
+        run: yarn run test
+  capture_preview_url:
     # テストしている間にVercelのURLが確定しているはずなので取得
     # Vercelのデプロイ先URLがないとmain以外のLighthouse測定ができない
     name: Vercelのデプロイ先URLを取得
-    # needs: test
+    needs: test
     runs-on: 'ubuntu-latest'
     outputs:
-      vercel_url: ${{ steps.vercel_url.outputs.vercel_url }}
+      preview_url: ${{ steps.preview_url.outputs.preview_url }}
     steps:
       # aaimio/vercel-preview-url-action はpushで動かない
       - uses: zentered/vercel-preview-url@v1.1.2
-        id: vercel_url
+        id: preview_url
         env:
           VERCEL_TOKEN: ${{ secrets.VERCEL_TOKEN }}
         with:
@@ -39,7 +39,7 @@ jobs:
   lighthouse-main:
     # 本番のURLを使ってLighthouseチェック
     # https://c-a-p-engineer.github.io/tech/2022/01/01/github-actions-lghthouse/
-    needs: capture_vercel_url
+    needs: capture_preview_url
     if: github.ref == 'refs/heads/main'
     runs-on: ubuntu-latest
     name: 本番環境URLのLighthouseスコアチェック
@@ -48,7 +48,7 @@ jobs:
         uses: foo-software/lighthouse-check-action@master
         id: lighthouseCheck
         with:
-          urls: ${{ needs.jobs.capture_vercel_url.outputs.vercel_url }}
+          urls: '${{ needs.jobs.capture_preview_url.outputs.preview_url }}'
       - name: Lighthouseのスコアを確認する
         uses: foo-software/lighthouse-check-status-action@master
         with:
@@ -62,17 +62,16 @@ jobs:
         run: echo "しっかりしろ！なんだこの杜撰な製品は"
   lighthouse-preview:
     # プレビューURLを使ってLighthouseチェック
-    needs: capture_vercel_url
+    needs: capture_preview_url
     if: github.ref != 'refs/heads/main'
     runs-on: ubuntu-latest
     name: プレビューURLのLighthouseスコアチェック
     steps:
-      - run: echo ${{ needs.jobs.capture_vercel_url.outputs.vercel_url }}
       - name: Lighthouse
         uses: foo-software/lighthouse-check-action@master
         id: lighthouseCheck
         with:
-          urls: ${{ needs.jobs.capture_vercel_url.outputs.vercel_url }}
+          urls: '${{ needs.jobs.capture_preview_url.outputs.preview_url }}'
       - name: Lighthouseのスコアを確認する
         uses: foo-software/lighthouse-check-status-action@master
         with:
