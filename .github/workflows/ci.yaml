@@ -26,8 +26,15 @@ jobs:
     runs-on: ubuntu-latest
     name: Lighthouse分析と結果コメント投稿
     steps:
-      - name: チェックアウト
-        uses: actions/checkout@v3
+      - name: コメントを追加
+        id: loading_comment_to_pr
+        uses: marocchino/sticky-pull-request-comment@v1
+        with:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          number: ${{ github.event.issue.number }}
+          header: lighthouse
+          message: |
+            Lighthouseで分析中...
       - name: プレビューURLを取得
         id: capture_preview_url
         uses: aaimio/vercel-preview-url-action@v1
@@ -35,6 +42,8 @@ jobs:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           # アクションが想定してるコメントと2022年12月7日の形式が違うっぽいので修正
           preview_url_regexp: '\[Visit Preview\]\((.*)\)'
+      - name: チェックアウト
+        uses: actions/checkout@v3
       - name: Lighthouseでページを分析
         id: lighthouse_audit
         uses: treosh/lighthouse-ci-action@v3
