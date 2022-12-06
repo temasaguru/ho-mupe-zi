@@ -25,15 +25,19 @@ jobs:
       - name: テスト
         run: yarn run test
   capture_vercel_url:
-    # Vercelのデプロイ先URLがないとmain以外のLighthouse測定ができないので
+    # テストしている間にVercelのURLが確定しているはずなので取得
+    # Vercelのデプロイ先URLがないとmain以外のLighthouse測定ができない
     name: Vercelのデプロイ先URLを取得
     needs: test
     runs-on: 'ubuntu-latest'
     steps:
-      - uses: aaimio/vercel-preview-url-action@v1
+      # aaimio/vercel-preview-url-action はpushで動かない
+      - uses: zentered/vercel-preview-url@v1.1.2
         id: vercel_url
+        env:
+          VERCEL_TOKEN: ${{ secrets.VERCEL_TOKEN }}
         with:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          vercel_project_id: ${{ secrets.VERCEL_PROJECT_ID }}
   lighthouse-main:
     # 本番のURLを使ってLighthouseチェック
     # https://c-a-p-engineer.github.io/tech/2022/01/01/github-actions-lghthouse/
@@ -42,12 +46,11 @@ jobs:
     runs-on: ubuntu-latest
     name: 本番環境URLのLighthouseスコアチェック
     steps:
-      - uses: actions/checkout@master
       - name: Lighthouse
         uses: foo-software/lighthouse-check-action@master
         id: lighthouseCheck
         with:
-          urls: '${{ steps.vercel_url.outputs.vercel_url }}'
+          urls: '${{ jobs.capture_vercel_url.steps.vercel_url.outputs.vercel_url }}'
       - name: Lighthouseのスコアを確認する
         uses: foo-software/lighthouse-check-status-action@master
         with:
@@ -66,12 +69,11 @@ jobs:
     runs-on: ubuntu-latest
     name: プレビューURLのLighthouseスコアチェック
     steps:
-      - uses: actions/checkout@master
       - name: Lighthouse
         uses: foo-software/lighthouse-check-action@master
         id: lighthouseCheck
         with:
-          urls: '${{ steps.vercel_url.outputs.vercel_url }}'
+          urls: '${{ jobs.capture_vercel_url.steps.vercel_url.outputs.vercel_url }}'
       - name: Lighthouseのスコアを確認する
         uses: foo-software/lighthouse-check-status-action@master
         with:
