@@ -20,7 +20,7 @@ const TrackInfo = ({
   onClick?: () => any;
 }) => {
   /** APIv1現在、ローカルファイルはライブラリに出ないので「検索する」はまず出ないはず */
-  const action = track.spotifyUrl ? 'Spotifyで開く' : '検索する';
+  const action = track.spotifyUrl ? 'Spotifyで聴く' : '検索する';
   const spotifyUrlOrSearch =
     track.spotifyUrl ?? `https://www.google.com/search?q=${track?.name}`;
   const handleOnKeyDown = (e: KeyboardEvent<HTMLDivElement>) => {
