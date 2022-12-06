@@ -102,8 +102,8 @@ const ProgressBar = ({
           // Tabキーで選択不能に
           disabled={true}
           className={twMerge(
-            'inline-flex h-12 w-12 cursor-default cursor-not-allowed items-center justify-center rounded-full bg-white',
-            result?.isPlaying && 'bg-green-500'
+            'inline-flex h-12 w-12 cursor-not-allowed items-center justify-center rounded-full border contrast-more:border-black',
+            result?.isPlaying ? 'bg-green-500' : 'bg-gray-400 dark:bg-white'
           )}
           // 空のdivが中身なので、アクセシビリティのために必ずaria-labelを付ける
           aria-label={'再生・一時停止ボタン'}

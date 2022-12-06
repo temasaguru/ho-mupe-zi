@@ -42,7 +42,7 @@ const AlbumArt = ({ loading = 'lazy', track, hasError }: AlbumArtProps) => {
               )}
             </>
           ) : (
-            <div className="m-auto p-4 text-xs">
+            <div className="flex h-full items-center justify-center bg-blue-900 text-white">
               ジャケットなし
               <br />
               (iTunes Store or
