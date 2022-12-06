@@ -7,8 +7,24 @@ interface ArtistListProps {
 const ArtistList = ({ artists }: ArtistListProps) => {
   return (
     <div className="flex flex-wrap gap-x-2">
-      {/* めちゃ小さいからaにするな、アクセシビリティ下がる */}
-      {artists.map((artist) => artist.name).join(' / ')}
+      {artists.map((artist, n) => {
+        // 現在聞いている曲がローカルファイルの場合もあり得るので注意
+        const action = artist.spotifyUrl ? 'Spotifyで開く' : '検索する';
+        const spotifyUrl = artist?.spotifyUrl;
+        const spotifyUrlOrSearch =
+          spotifyUrl ?? `https://www.google.com/search?q=${artist?.name}`;
+        return (
+          <a
+            key={n}
+            href={spotifyUrlOrSearch}
+            target="_blank"
+            aria-label={`クリックで${artist.name}を${action}`}
+            rel="noreferrer"
+          >
+            {artist.name}
+          </a>
+        );
+      })}
     </div>
   );
 };

@@ -16,6 +16,7 @@ const MusicInfo = ({ track, hasError }: MusicInfoProps) => {
     <div className="flex min-w-[200px] flex-col items-start text-xl">
       {/* items-startで寄せないと、リンクのエリアが無駄に右に広がる */}
       <a
+        aria-label="曲名"
         href={spotifyUrlOrSearch}
         target="_blank"
         rel="noreferrer"
@@ -24,7 +25,12 @@ const MusicInfo = ({ track, hasError }: MusicInfoProps) => {
         {/* inline-blockにしないと、文字がない場所もリンクになってしまう */}
         {track ? track.name : hasError ? '(曲名取得失敗)' : '(Loading...)'}
       </a>
-      <a href={albumUrlOrSearch} target="_blank" rel="noreferrer">
+      <a
+        aria-label="アルバム名"
+        href={albumUrlOrSearch}
+        target="_blank"
+        rel="noreferrer"
+      >
         <div className="text-yellow-800 dark:text-yellow-200">
           {track
             ? track.album.name
@@ -33,7 +39,10 @@ const MusicInfo = ({ track, hasError }: MusicInfoProps) => {
             : '(Loading...)'}
         </div>
       </a>
-      <div className="flex flex-wrap gap-2 text-blue-800 dark:text-blue-200">
+      <div
+        aria-label="アーティスト名"
+        className="flex flex-wrap gap-2 text-blue-800 dark:text-blue-200"
+      >
         {track ? (
           <ArtistList artists={track.artists} />
         ) : hasError ? (

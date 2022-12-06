@@ -9,12 +9,22 @@ const Library = () => {
     limit: clientEnv.SPOTIFY_LIBRARY_LIMIT,
   });
   const length = spotifyLibrary?.tracks ? spotifyLibrary.tracks.length : 0;
-  const [openedTrack, setOpenedTrack] = useState<string | null>(null);
+  /**
+   * 選択中のトラックのID
+   * hoverはスマホと相性が悪いため開閉は真偽値で管理
+   */
+  const [openedTrackId, setOpenedTrackId] = useState<string | null>(null);
   return (
     <div className="flex flex-col gap-y-4">
       <HeadingAndDescription
         title={`Spotify追加 最新${length}`}
-        description="タップで詳細を開く"
+        description={
+          <>
+            {`タップ or Spaceで詳細を開く`}
+            <br />
+            {`Spotifyサイトは音が出るかもなので注意`}
+          </>
+        }
       />
       <div className="flex w-full flex-wrap">
         {spotifyLibrary?.tracks?.map((track, n) => (
@@ -22,8 +32,11 @@ const Library = () => {
             key={track.id}
             track={track}
             n={n}
-            open={track.id === openedTrack}
-            onClick={() => setOpenedTrack(track.id)}
+            open={track.id === openedTrackId}
+            onClick={() =>
+              // 選択中のトラックをクリックで選択解除
+              setOpenedTrackId(track.id === openedTrackId ? null : track.id)
+            }
           />
         ))}
         {!spotifyLibrary?.tracks && <div>Error</div>}
