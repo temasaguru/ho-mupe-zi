@@ -27,10 +27,11 @@ jobs:
     needs: test
     runs-on: 'ubuntu-latest'
     outputs:
-      preview_url: ${{ steps.preview_url.outputs.preview_url }}
+      # https://が付いてないのでここで付ける
+      preview_url: 'https://${{ steps.preview_url.outputs.preview_url }}'
     steps:
       # aaimio/vercel-preview-url-action はpushで動かない
-      - uses: zentered/vercel-preview-url@v1.0.0
+      - uses: zentered/vercel-preview-url@v1.1.2
         id: preview_url
         env:
           VERCEL_TOKEN: ${{ secrets.VERCEL_TOKEN }}
