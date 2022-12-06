@@ -34,6 +34,10 @@
 
 ## Special Thanks
 
+### VercelプレビューURLでLighthouse分析
+
+https://github.com/OskarAhl/Lighthouse-github-action-comment
+
 ### TypeScript + Clean Architecture
 
 https://qiita.com/sadnessOjisan/items/ea5590efa3f55ef56edd

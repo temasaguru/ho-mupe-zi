@@ -1,8 +1,8 @@
 name: CI (テストとLighthouseスコアチェック)
 
 on:
-  push:
-  workflow_dispatch:
+  issue_comment:
+    types: [edited]
 
 jobs:
   test:
@@ -20,66 +20,56 @@ jobs:
         run: yarn run typecheck
       - name: テスト
         run: yarn run test
-  capture_preview_url:
-    # テストしている間にVercelのURLが確定しているはずなので取得
-    # Vercelのデプロイ先URLがないとmain以外のLighthouse測定ができない
-    name: Vercelのデプロイ先URLを取得
+  lighthouse:
     needs: test
-    runs-on: 'ubuntu-latest'
-    outputs:
-      # https://が付いてないのでここで付ける
-      preview_url: 'https://${{ steps.preview_url.outputs.preview_url }}'
-    steps:
-      # aaimio/vercel-preview-url-action はpushで動かない
-      - uses: zentered/vercel-preview-url@v1.1.2
-        id: preview_url
-        env:
-          VERCEL_TOKEN: ${{ secrets.VERCEL_TOKEN }}
-        with:
-          vercel_project_id: ${{ secrets.VERCEL_PROJECT_ID }}
-  lighthouse-main:
-    # 本番のURLを使ってLighthouseチェック
-    # https://c-a-p-engineer.github.io/tech/2022/01/01/github-actions-lghthouse/
-    needs: capture_preview_url
-    if: github.ref == 'refs/heads/main'
     runs-on: ubuntu-latest
-    name: 本番環境URLのLighthouseスコアチェック
+    name: Lighthouse分析と結果コメント投稿
     steps:
-      - name: Lighthouse
-        uses: foo-software/lighthouse-check-action@master
-        id: lighthouseCheck
+      - name: プレビューURLを取得
+        id: capture_preview_url
+        uses: aaimio/vercel-preview-url-action@v1
         with:
-          urls: '${{ needs.jobs.capture_preview_url.outputs.preview_url }}'
-      - name: Lighthouseのスコアを確認する
-        uses: foo-software/lighthouse-check-status-action@master
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      - name: Lighthouseでページを分析
+        id: lighthouse_audit
+        uses: treosh/lighthouse-ci-action@v3
         with:
-          lighthouseCheckResults: ${{ steps.lighthouseCheck.outputs.lighthouseCheckResults }}
-          minPerformanceScore: '90'
-          # アクセシビリティは任意ではない Accessibility is NOT optional
-          minAccessibilityScore: '98'
-          minBestPracticesScore: '98'
-          minSeoScore: '90'
-      - if: failure()
-        run: echo "しっかりしろ！なんだこの杜撰な製品は"
-  lighthouse-preview:
-    # プレビューURLを使ってLighthouseチェック
-    needs: capture_preview_url
-    if: github.ref != 'refs/heads/main'
-    runs-on: ubuntu-latest
-    name: プレビューURLのLighthouseスコアチェック
-    steps:
-      - name: Lighthouse
-        uses: foo-software/lighthouse-check-action@master
-        id: lighthouseCheck
+          urls: |
+            ${{ steps.capture_preview_url.outputs.vercel_preview_url }}
+          uploadArtifacts: true
+          temporaryPublicStorage: true
+      - name: スコアを整形する
+        # 以下のワークフローを引用修正
+        # https://github.com/OskarAhl/Lighthouse-github-action-comment/blob/main/.github/workflows/lighthouse-on-vercel-preview-url.yml
+        id: format_lighthouse_score
+        uses: actions/github-script@v3
         with:
-          urls: '${{ needs.jobs.capture_preview_url.outputs.preview_url }}'
-      - name: Lighthouseのスコアを確認する
-        uses: foo-software/lighthouse-check-status-action@master
+          github-token: ${{secrets.GITHUB_TOKEN}}
+          script: |
+            const result = ${{ steps.lighthouse_audit.outputs.manifest }}[0].summary
+            const links = ${{ steps.lighthouse_audit.outputs.links }}
+            const formatResult = (res) => Math.round((res * 100))
+            Object.keys(result).forEach(key => result[key] = formatResult(result[key]))
+            const score = res => res >= 90 ? '🟢' : res >= 50 ? '🟠' : '🔴'
+            const comment = [
+                `[Lighthouse分析結果](${Object.values(links)[0]}):`,
+                '| 項目 | スコア |',
+                '| --- | --- |',
+                `| ${score(result.performance)} パフォーマンス | ${result.performance} |`,
+                `| ${score(result.accessibility)} アクセシビリティ | ${result.accessibility} |`,
+                `| ${score(result['best-practices'])} ベストプラクティス | ${result['best-practices']} |`,
+                `| ${score(result.seo)} SEO | ${result.seo} |`,
+                `| ${score(result.pwa)} PWA | ${result.pwa} |`,
+                ' ',
+                `*分析したURL: [${Object.keys(links)[0]}](${Object.keys(links)[0]})*`
+            ].join('\n')
+             core.setOutput("comment", comment);
+      - name: Lighthouse結果をコメント
+        id: comment_to_pr
+        uses: marocchino/sticky-pull-request-comment@v1
         with:
-          lighthouseCheckResults: ${{ steps.lighthouseCheck.outputs.lighthouseCheckResults }}
-          minPerformanceScore: '90'
-          minAccessibilityScore: '98'
-          minBestPracticesScore: '98'
-          # プレビューURLなのでSEOは測定しない minSeoScore: '90'
-      - if: failure()
-        run: echo "これはマージするな!"
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          number: ${{ github.event.issue.number }}
+          header: lighthouse
+          message: |
+            ${{ steps.format_lighthouse_score.outputs.comment }}
