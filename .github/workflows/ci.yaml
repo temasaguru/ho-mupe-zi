@@ -24,18 +24,30 @@ jobs:
         run: yarn run typecheck
       - name: テスト
         run: yarn run test
-  lighthouse:
-    # https://c-a-p-engineer.github.io/tech/2022/01/01/github-actions-lghthouse/
-    # テストしてこのジョブを準備する間にVercelのデプロイができるはず
+  capture_vercel_url:
+    # Vercelのデプロイ先URLがないとmain以外のLighthouse測定ができないので
+    name: Vercelのデプロイ先URLを取得
     needs: test
+    runs-on: 'ubuntu-latest'
+    steps:
+      - uses: aaimio/vercel-preview-url-action@v1
+        id: vercel_url
+        with:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+  lighthouse-main:
+    # 本番のURLを使ってLighthouseチェック
+    # https://c-a-p-engineer.github.io/tech/2022/01/01/github-actions-lghthouse/
+    needs: capture_vercel_url
+    if: github.ref == 'refs/heads/main'
     runs-on: ubuntu-latest
+    name: 本番環境URLのLighthouseスコアチェック
     steps:
       - uses: actions/checkout@master
       - name: Lighthouse
         uses: foo-software/lighthouse-check-action@master
         id: lighthouseCheck
         with:
-          urls: 'https://www.temasa.guru'
+          urls: '${{ steps.vercel_url.outputs.vercel_url }}'
       - name: Lighthouseのスコアを確認する
         uses: foo-software/lighthouse-check-status-action@master
         with:
@@ -47,3 +59,26 @@ jobs:
           minSeoScore: '90'
       - if: failure()
         run: echo "しっかりしろ！なんだこの杜撰な製品は"
+  lighthouse-preview:
+    # プレビューURLを使ってLighthouseチェック
+    needs: capture_vercel_url
+    if: github.ref != 'refs/heads/main'
+    runs-on: ubuntu-latest
+    name: プレビューURLのLighthouseスコアチェック
+    steps:
+      - uses: actions/checkout@master
+      - name: Lighthouse
+        uses: foo-software/lighthouse-check-action@master
+        id: lighthouseCheck
+        with:
+          urls: '${{ steps.vercel_url.outputs.vercel_url }}'
+      - name: Lighthouseのスコアを確認する
+        uses: foo-software/lighthouse-check-status-action@master
+        with:
+          lighthouseCheckResults: ${{ steps.lighthouseCheck.outputs.lighthouseCheckResults }}
+          minPerformanceScore: '90'
+          minAccessibilityScore: '98'
+          minBestPracticesScore: '98'
+          # プレビューURLなのでSEOは測定しない minSeoScore: '90'
+      - if: failure()
+        run: echo "これはマージするな!"
