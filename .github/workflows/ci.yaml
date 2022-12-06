@@ -30,7 +30,7 @@ jobs:
       preview_url: ${{ steps.preview_url.outputs.preview_url }}
     steps:
       # aaimio/vercel-preview-url-action はpushで動かない
-      - uses: zentered/vercel-preview-url@v1.1.2
+      - uses: zentered/vercel-preview-url@v1.0.0
         id: preview_url
         env:
           VERCEL_TOKEN: ${{ secrets.VERCEL_TOKEN }}
