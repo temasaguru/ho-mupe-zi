@@ -30,6 +30,8 @@ jobs:
     name: Vercelのデプロイ先URLを取得
     needs: test
     runs-on: 'ubuntu-latest'
+    outputs:
+      vercel_url: ${{ steps.vercel_url.outputs.vercel_url }}
     steps:
       # aaimio/vercel-preview-url-action はpushで動かない
       - uses: zentered/vercel-preview-url@v1.1.2
@@ -50,7 +52,7 @@ jobs:
         uses: foo-software/lighthouse-check-action@master
         id: lighthouseCheck
         with:
-          urls: '${{ jobs.capture_vercel_url.steps.vercel_url.outputs.vercel_url }}'
+          urls: '${{ needs.jobs.capture_vercel_url.outputs.vercel_url }}'
       - name: Lighthouseのスコアを確認する
         uses: foo-software/lighthouse-check-status-action@master
         with:
@@ -73,7 +75,7 @@ jobs:
         uses: foo-software/lighthouse-check-action@master
         id: lighthouseCheck
         with:
-          urls: '${{ jobs.capture_vercel_url.steps.vercel_url.outputs.vercel_url }}'
+          urls: '${{ needs.jobs.capture_vercel_url.outputs.vercel_url }}'
       - name: Lighthouseのスコアを確認する
         uses: foo-software/lighthouse-check-status-action@master
         with:
