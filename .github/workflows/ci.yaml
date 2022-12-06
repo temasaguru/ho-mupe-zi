@@ -7,17 +7,13 @@ on:
 jobs:
   test:
     runs-on: ubuntu-latest
-    strategy:
-      matrix:
-        # 将来的なVercelの対応を想定
-        node: [16, 18]
-    name: Node ${{ matrix.node }} で型チェックとテスト
+    name: Node 16で型チェックとテスト
     steps:
       - uses: actions/checkout@v3
       - name: Setup node
         uses: actions/setup-node@v3
         with:
-          node-version: ${{ matrix.node }}
+          node-version: 16
           cache: 'yarn'
       - run: yarn install --frozen-lockfile
       - name: 型チェック
@@ -52,7 +48,7 @@ jobs:
         uses: foo-software/lighthouse-check-action@master
         id: lighthouseCheck
         with:
-          urls: '${{ needs.jobs.capture_vercel_url.outputs.vercel_url }}'
+          urls: ${{ needs.jobs.capture_vercel_url.outputs.vercel_url }}
       - name: Lighthouseのスコアを確認する
         uses: foo-software/lighthouse-check-status-action@master
         with:
@@ -75,7 +71,7 @@ jobs:
         uses: foo-software/lighthouse-check-action@master
         id: lighthouseCheck
         with:
-          urls: '${{ needs.jobs.capture_vercel_url.outputs.vercel_url }}'
+          urls: ${{ needs.jobs.capture_vercel_url.outputs.vercel_url }}
       - name: Lighthouseのスコアを確認する
         uses: foo-software/lighthouse-check-status-action@master
         with:
