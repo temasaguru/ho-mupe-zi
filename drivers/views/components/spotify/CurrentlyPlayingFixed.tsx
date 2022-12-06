@@ -28,7 +28,7 @@ const CurrentlyPlayingFixed = () => {
           'after:absolute after:bottom-0 after:-left-10 after:z-20 after:h-4 after:w-10 after:rounded-br-xl after:shadow-[16px_0_0_0_white] dark:after:shadow-[16px_0_0_0_black]'
         )}
       >
-        <div className="group relative h-full w-full">
+        <div className="group relative h-full w-full overflow-hidden rounded-xl">
           <AlbumArt track={result?.track ?? null} hasError={error !== null} />
           <div className="absolute top-0 left-0 hidden h-full w-full items-center bg-black/80 text-center text-white group-hover:flex">
             {'曲名をクリックしてSpotifyで開く'}
