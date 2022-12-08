@@ -17,14 +17,6 @@ const nextConfig = {
      */
     NEXTAUTH_URL: process.env.NEXTAUTH_URL,
   },
-  images: {
-    domains: [
-      /**
-       * Spotify CDN
-       */
-      'i.scdn.co',
-    ],
-  },
 };
 
 module.exports = withBundleAnalyzer(nextConfig);

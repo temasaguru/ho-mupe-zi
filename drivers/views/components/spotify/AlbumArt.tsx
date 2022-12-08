@@ -1,8 +1,8 @@
-import Image, { ImageProps } from 'next/image';
 import { SpotifyTrackJSON } from '@/application/interfaces/json/spotify/common';
+import { ComponentPropsWithoutRef } from 'react';
 
 interface AlbumArtProps {
-  loading?: ImageProps['loading'];
+  loading?: ComponentPropsWithoutRef<'img'>['loading'];
   track: SpotifyTrackJSON | null;
   hasError: boolean;
 }
@@ -18,28 +18,16 @@ const AlbumArt = ({ loading = 'lazy', track, hasError }: AlbumArtProps) => {
         <>
           {albumImage ? (
             <>
-              {albumImage.url.startsWith('https://i.scdn.co') ? (
-                <Image
-                  width={300}
-                  height={300}
-                  src={albumImage?.url}
-                  alt={track?.album.name ?? ''}
-                  loading={loading}
-                  // 遅延読み込みでない場合はpriorityが必要 https://nextjs.org/docs/api-reference/next/image#priority
-                  priority={loading !== 'lazy'}
-                  className="w-full"
-                />
-              ) : (
-                <>
-                  {/* 多分i.scdn.coがSpotifyのCDNなんだろうが、突然変えられると対応できないのでimgで対処 */}
-                  {/* eslint-disable-next-line @next/next/no-img-element */}
-                  <img
-                    src={albumImage?.url}
-                    alt={track?.album.name ?? ''}
-                    className="w-full"
-                  />
-                </>
-              )}
+              {/* 公式やDiscordの埋め込みと同様、SpotifyのCDNから直接表示 再キャッシュはしない */}
+              {/* eslint-disable-next-line @next/next/no-img-element */}
+              <img
+                width={300}
+                height={300}
+                src={albumImage?.url}
+                alt={track?.album.name ?? ''}
+                loading={loading}
+                className="w-full"
+              />
             </>
           ) : (
             <div className="flex h-full items-center justify-center bg-blue-900 text-white">
