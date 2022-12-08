@@ -77,7 +77,7 @@ export interface Album {
   release_date: string | null;
   release_date_precision: string | null;
   total_tracks: number;
-  type: string;
+  type: 'album';
   uri: string | null;
 }
 
@@ -108,7 +108,48 @@ export interface Track {
   popularity: number;
   preview_url: string;
   track_number: number;
-  type: string;
+  type: 'track';
+  uri: string;
+}
+
+/**
+ * ポッドキャストの番組
+ */
+export interface Show {
+  artists: Artist[];
+  available_markets: string[];
+  external_urls: ExternalUrls;
+  href: string;
+  id: string;
+  images: (AlbumImage | null)[];
+  name: string;
+  /** アーティスト名に相当 */
+  publisher: string;
+  release_date: string | null;
+  release_date_precision: string | null;
+  total_tracks: number;
+  type: 'show';
+  uri: string | null;
+}
+/**
+ * ポッドキャスト各回の情報
+ */
+export interface Episode {
+  available_markets: string[];
+  disc_number: number;
+  description: string;
+  duration_ms: number;
+  explicit: boolean;
+  external_ids: ExternalIds;
+  external_urls: ExternalUrls;
+  href: string | null;
+  id: string | null;
+  /** 曲と違って回には画像がある */
+  images: (AlbumImage | null)[];
+  name: string;
+  show: Show;
+  /** ポッドキャストは`episode` */
+  type: 'episode';
   uri: string;
 }
 
@@ -128,7 +169,7 @@ export interface SpotifyCurrentlyPlayingResponse {
   timestamp: number;
   context: Context;
   progress_ms: number;
-  item: Track;
+  item: Track | Episode;
   currently_playing_type: string;
   actions: {
     disallows: {
@@ -172,7 +213,9 @@ export class SpotifyApiV1 implements ISpotifyAPI {
   private transformResponseTrackToJSONTrack(
     item: SpotifyCurrentlyPlayingResponse['item']
   ): SpotifyTrackJSON {
-    const albumImages = item.album.images;
+    /** 曲はtrue ポッドキャストならfalse */
+    const isTrack = item.type === 'track';
+    const albumImages = isTrack ? item.album.images : item.images;
     /**
      * アルバム画像[1]は300x300なので使いやすい (APIv1時点の仕様)
      */
@@ -187,16 +230,30 @@ export class SpotifyApiV1 implements ISpotifyAPI {
       name: item.name,
       spotifyUrl: item.external_urls.spotify,
       album: {
-        name: item.album.name,
-        spotifyUrl: item.album.external_urls.spotify,
+        name: isTrack ? item.album.name : item.show.name,
+        spotifyUrl: isTrack
+          ? item.album.external_urls.spotify
+          : item.show.external_urls.spotify,
         image: albumImage,
       },
-      artists: item.artists.map((artist) => {
-        return {
-          name: artist.name,
-          spotifyUrl: artist.external_urls.spotify,
-        };
-      }),
+      /**
+       * ポッドキャスト自体にはアーティストがない
+       * 番組にパブリッシャー欄があるのでそれをアーティスト名とする
+       */
+      artists: isTrack
+        ? item.artists.map((artist) => {
+            return {
+              name: artist.name,
+              spotifyUrl: artist.external_urls.spotify,
+            };
+          })
+        : [
+            {
+              name: item.show.publisher,
+              // 番組のURLはあるが、パブリッシャーはないっぽい
+              spotifyUrl: null,
+            },
+          ],
       durationMilliSeconds: item.duration_ms,
     };
   }
@@ -353,7 +410,14 @@ export class SpotifyApiV1 implements ISpotifyAPI {
    */
   public getCurrentlyPlaying =
     async (): Promise<SpotifyCurrentlyPlayingJSON | null> => {
-      const res = await this.fetch('/me/player/currently-playing');
+      const query = new URLSearchParams();
+      /**
+       * これがないとポッドキャスト取れない！注意
+       */
+      query.append('additional_types', 'track,episode');
+      const res = await this.fetch(
+        '/me/player/currently-playing?' + query.toString()
+      );
       const fetchData = async () => {
         const data = (await res.json()) as SpotifyCurrentlyPlayingResponse;
         if (res.ok && data) {
@@ -406,6 +470,9 @@ export class SpotifyApiV1 implements ISpotifyAPI {
   /**
    * ライブラリを取得する
    * @see https://developer.spotify.com/documentation/web-api/reference/#/operations/get-users-saved-tracks
+   *
+   * なお、「お気に入りのエピソード」はライブラリとは別のエンドポイントなので含まれない 対応は検討中
+   * @see https://developer.spotify.com/documentation/web-api/reference/#/operations/get-users-saved-episodes
    */
   public getLibrary = async ({
     limit,
