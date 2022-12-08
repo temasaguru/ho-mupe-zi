@@ -14,6 +14,7 @@ export interface SpotifyArtistJSON {
 
 /**
  * コンポーネントで使用する曲情報
+ * 設計簡略化のため、ポッドキャストもこの形式に変換する
  */
 export interface SpotifyTrackJSON {
   /** mapした際にkeyで使う */
