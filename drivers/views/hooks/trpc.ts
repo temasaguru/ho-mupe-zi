@@ -31,8 +31,13 @@ export const trpc = createTRPCNext<AppRouter>({
           url: `${clientEnv.NEXTAUTH_URL}/api/trpc`,
           headers() {
             if (ctx?.req) {
-              // ヘッダーの送信を忘れないこと
-              const headers = ctx.req.headers;
+              /**
+               * HTTP/2の禁止ヘッダーである`Connection`を、クライアントから追加してしまわないよう、
+               * 手動で削除する
+               * @see https://github.com/KATT/unidici-fetch-reserved-header-crap/pull/1#discussion_r946894919
+               */
+              let headers = ctx?.req?.headers;
+              delete headers?.connection;
               return {
                 ...headers,
                 'x-ssr': '1',
