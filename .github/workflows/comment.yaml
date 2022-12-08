@@ -1,0 +1,85 @@
+name: PRのLighthouseスコアチェック
+
+on:
+  issue_comment:
+    types: [edited]
+
+jobs:
+  comment:
+    runs-on: ubuntu-latest
+    name: コメント内容を判定
+    steps:
+      - name: チェックアウト
+        uses: actions/checkout@v3
+      - name: Vercel Botのコメントじゃない場合はここで終了
+        uses: peter-evans/find-comment@v1
+        id: bot
+        with:
+          issue-number: ${{ github.event.number }}
+          body-includes: 'The latest updates on your projects'
+  lighthouse:
+    runs-on: ubuntu-latest
+    needs: comment
+    name: Lighthouse分析と結果コメント投稿
+    steps:
+      - name: チェックアウト
+        uses: actions/checkout@v3
+      - name: コメントを追加
+        id: loading_comment_to_pr
+        uses: marocchino/sticky-pull-request-comment@v1
+        with:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          number: ${{ github.event.issue.number }}
+          header: lighthouse
+          message: |
+            Lighthouseで分析中...
+      - name: プレビューURLを取得
+        id: capture_preview_url
+        uses: aaimio/vercel-preview-url-action@v1
+        with:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          # アクションが想定してるコメントと2022年12月7日の形式が違うっぽいので修正
+          preview_url_regexp: '\[Visit Preview\]\(((.*).app)\)'
+      - name: Lighthouseでページを分析
+        id: lighthouse_audit
+        uses: treosh/lighthouse-ci-action@v3
+        with:
+          urls: |
+            ${{ steps.capture_preview_url.outputs.vercel_preview_url }}
+          uploadArtifacts: true
+          temporaryPublicStorage: true
+      - name: スコアを整形する
+        # 以下のワークフローを引用修正
+        # https://github.com/OskarAhl/Lighthouse-github-action-comment/blob/main/.github/workflows/lighthouse-on-vercel-preview-url.yml
+        id: format_lighthouse_score
+        uses: actions/github-script@v3
+        with:
+          github-token: ${{secrets.GITHUB_TOKEN}}
+          script: |
+            const result = ${{ steps.lighthouse_audit.outputs.manifest }}[0].summary
+            const links = ${{ steps.lighthouse_audit.outputs.links }}
+            const formatResult = (res) => Math.round((res * 100))
+            Object.keys(result).forEach(key => result[key] = formatResult(result[key]))
+            const score = res => res >= 90 ? '🟢' : res >= 50 ? '🟠' : '🔴'
+            const comment = [
+                `[Lighthouse分析結果](${Object.values(links)[0]}):`,
+                '| 項目 | スコア |',
+                '| --- | --- |',
+                `| ${score(result.performance)} パフォーマンス | ${result.performance} |`,
+                `| ${score(result.accessibility)} アクセシビリティ | ${result.accessibility} |`,
+                `| ${score(result['best-practices'])} ベストプラクティス | ${result['best-practices']} |`,
+                `| ${score(result.seo)} SEO | ${result.seo} |`,
+                `| ${score(result.pwa)} PWA | ${result.pwa} |`,
+                ' ',
+                `*分析したURL: [${Object.keys(links)[0]}](${Object.keys(links)[0]})*`
+            ].join('\n')
+             core.setOutput("comment", comment);
+      - name: Lighthouse結果をコメント
+        id: comment_to_pr
+        uses: marocchino/sticky-pull-request-comment@v1
+        with:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          number: ${{ github.event.issue.number }}
+          header: lighthouse
+          message: |
+            ${{ steps.format_lighthouse_score.outputs.comment }}
