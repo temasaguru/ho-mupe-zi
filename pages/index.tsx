@@ -5,10 +5,11 @@ import { InferGetStaticPropsType } from 'next';
 import { appRouter } from '@/drivers/trpc/routers/_app';
 import { NextPageWithLayout } from '@/drivers/next';
 import { createContext } from '@/drivers/trpc/trpc';
-import DefaultLayout from '@/drivers/views/components/layout/DefaultLayout';
-import { DESCRIPTION, SITE_NAME } from '@/drivers/views/components/const';
-import Library from '@/drivers/views/components/spotify/Library';
 import { serverEnv } from '@/drivers/env/ServerEnv';
+import { DESCRIPTION, SITE_NAME } from '@/drivers/views/components/const';
+import DefaultLayout from '@/drivers/views/components/layout/DefaultLayout';
+import Library from '@/drivers/views/components/spotify/Library';
+import Playlist from '@/drivers/views/components/spotify/Playlist';
 
 export const getStaticProps = async () => {
   const ssg = createProxySSGHelpers({
@@ -17,6 +18,10 @@ export const getStaticProps = async () => {
     transformer: SuperJSON,
   });
   await ssg.spotify.spotifyLibrary.prefetch({
+    limit: serverEnv.SPOTIFY_LIBRARY_LIMIT,
+  });
+  await ssg.spotify.spotifyPlaylist.prefetch({
+    playlistId: serverEnv.SPOTIFY_PLAYLIST_ID,
     limit: serverEnv.SPOTIFY_LIBRARY_LIMIT,
   });
   return {
@@ -36,6 +41,8 @@ const Home: NextPageWithLayout<Props> = () => {
         <title>{SITE_NAME}</title>
         <meta name="description" content={DESCRIPTION}></meta>
       </Head>
+      <Playlist />
+      <hr className="my-8" />
       <Library />
     </div>
   );
