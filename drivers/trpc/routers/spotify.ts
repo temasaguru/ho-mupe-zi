@@ -1,4 +1,5 @@
 import { getSpotifyLibraryInput } from '@/application/interfaces/inputs/GetSpotifyLibraryInput';
+import { getSpotifyPlaylistInput } from '@/application/interfaces/inputs/GetSpotifyPlaylistInput';
 import { SpotifyUseCase } from '@/application/usecases/SpotifyUsecase';
 import { SpotifyRepository } from '@/adaptors/repositories/spotify/SpotifyRepository';
 import { RedisConnection } from '@/drivers/databases/RedisConnection';
@@ -20,5 +21,10 @@ export const spotifyRouter = router({
     .input(getSpotifyLibraryInput)
     .query(async ({ input }) => {
       return await useCase.getLibraryJSON(input);
+    }),
+  spotifyPlaylist: procedure
+    .input(getSpotifyPlaylistInput)
+    .query(async ({ input }) => {
+      return await useCase.getPlaylistJSON(input);
     }),
 });

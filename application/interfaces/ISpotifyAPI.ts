@@ -4,6 +4,8 @@ import { UpdateSpotifyTokenInput } from '@/application/interfaces/inputs/UpdateS
 import { SpotifyTokenJSON } from '@/application/interfaces/json/spotify/common';
 import { SpotifyCurrentlyPlayingJSON } from '@/application/interfaces/json/spotify/CurrentlyPlaying';
 import { SpotifyLibraryJSON } from '@/application/interfaces/json/spotify/Library';
+import { GetSpotifyPlaylistInput } from './inputs/GetSpotifyPlaylistInput';
+import { SpotifyPlaylistJSON } from './json/spotify/Playlist';
 
 /**
  * SpotifyAPIの仕様変更に対応できるようインターフェースを定義
@@ -23,4 +25,11 @@ export interface ISpotifyAPI {
    * ライブラリを取得
    */
   getLibrary(input: GetSpotifyLibraryInput): Promise<SpotifyLibraryJSON | null>;
+
+  /**
+   * プレイリストを取得
+   */
+  getPlaylist(
+    input: GetSpotifyPlaylistInput
+  ): Promise<SpotifyPlaylistJSON | null>;
 }
