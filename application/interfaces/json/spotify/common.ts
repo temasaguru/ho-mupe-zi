@@ -24,6 +24,7 @@ export interface SpotifyTrackJSON {
   album: SpotifyAlbumJSON;
   artists: SpotifyArtistJSON[];
   durationMilliSeconds: number;
+  is_local: boolean;
 }
 
 /**

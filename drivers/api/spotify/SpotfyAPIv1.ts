@@ -259,6 +259,7 @@ export class SpotifyApiV1 implements ISpotifyAPI {
             },
           ],
       durationMilliSeconds: item.duration_ms,
+      is_local: isTrack ? item.is_local : false,
     };
   }
 

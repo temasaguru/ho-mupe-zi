@@ -41,8 +41,8 @@ const TrackInfo = ({
       <div
         className={twMerge(
           'absolute top-0 z-30 hidden h-full w-full flex-col justify-between gap-3 bg-white/80 p-3 shadow-xl contrast-more:bg-white dark:bg-black/80 dark:contrast-more:bg-black',
-          // hoverはスマホと相性が悪いため開閉は真偽値で管理
-          open && 'flex'
+          // hoverはスマホと相性が悪いため開閉は真偽値で管理、ローカルファイルなら常に表示
+          (open || track.is_local) && 'flex'
         )}
       >
         <div>
