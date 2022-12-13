@@ -20,11 +20,7 @@ const Playlist = () => {
       <HeadingAndDescription
         title={`推し曲 最新${length}`}
         description={
-          <>
-            {`タップ or Spaceで詳細を開く`}
-            <br />
-            {`Spotifyサイトは音が出るかもなので注意`}
-          </>
+          <>{`サブスク解禁されてない曲はジャケット出せないので、日本コロムビアさんよろしくお願いします！`}</>
         }
       />
       <div className="flex w-full flex-wrap">
