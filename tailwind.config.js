@@ -5,4 +5,5 @@ module.exports = {
     './drivers/views/**/*.{js,ts,jsx,tsx}',
     './data/**/*.{js,ts,jsx,tsx,md,mdx}',
   ],
+  plugins: [require('@tailwindcss/typography')],
 };

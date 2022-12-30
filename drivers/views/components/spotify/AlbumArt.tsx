@@ -13,7 +13,7 @@ const AlbumArt = ({ loading = 'lazy', track, hasError }: AlbumArtProps) => {
    */
   const albumImage = track?.album.image;
   return (
-    <>
+    <div>
       {track ? (
         <>
           {/* 公式やDiscordの埋め込みと同様、SpotifyのCDNから直接表示 再キャッシュはしない */}
@@ -37,7 +37,7 @@ const AlbumArt = ({ loading = 'lazy', track, hasError }: AlbumArtProps) => {
           <div className="m-auto p-4">Loading...</div>
         </div>
       )}
-    </>
+    </div>
   );
 };
 export default AlbumArt;

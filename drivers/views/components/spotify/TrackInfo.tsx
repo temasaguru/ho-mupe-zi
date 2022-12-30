@@ -7,16 +7,10 @@ import ArtistList from './ArtistList';
 const TrackInfo = ({
   track,
   open,
-  n,
   onClick,
 }: {
   track: SpotifyTrackJSON;
   open?: boolean;
-  /**
-   * 最初の画像はlazy loadingできないので何番目かを渡す
-   * また、tab indexでも使う
-   */
-  n: number;
   onClick?: () => any;
 }) => {
   /** APIv1現在、ローカルファイルはライブラリに出ないので「検索する」はまず出ないはず */
@@ -61,12 +55,7 @@ const TrackInfo = ({
           {action}
         </a>
       </div>
-      <AlbumArt
-        // 最初の画像が遅延読み込みされているとLCPに影響を与える
-        loading={n > 0 ? 'lazy' : 'eager'}
-        track={track}
-        hasError={false}
-      />
+      <AlbumArt track={track} hasError={false} />
     </div>
   );
 };

@@ -13,8 +13,8 @@ const MusicInfo = ({ track, hasError }: MusicInfoProps) => {
   const spotifyUrlOrSearch =
     spotifyUrl ?? `https://www.google.com/search?q=${track?.name}`;
   return (
-    <div className="flex min-w-[200px] flex-col items-start text-xl">
-      {/* items-startで寄せないと、リンクのエリアが無駄に右に広がる */}
+    <div className="flex min-w-[200px] flex-col items-start gap-y-4 text-xl">
+      {/* items-startで寄せないと、リンクのエリアが無駄に右に広がる gapがないとタップエリアで怒られる */}
       <a
         aria-label="曲名"
         href={spotifyUrlOrSearch}
