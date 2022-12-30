@@ -21,10 +21,7 @@ export const clientEnv = envsafe(
     SPOTIFY_LIBRARY_LIMIT: num({
       input: process.env.NEXT_PUBLIC_SPOTIFY_LIBRARY_LIMIT,
       allowEmpty: true,
-      default: 18,
-    }),
-    SPOTIFY_PLAYLIST_ID: str({
-      input: process.env.NEXT_PUBLIC_SPOTIFY_PLAYLIST_ID,
+      default: 30,
     }),
   },
   {

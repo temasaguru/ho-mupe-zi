@@ -21,7 +21,8 @@ const AlbumArt = ({ loading = 'lazy', track, hasError }: AlbumArtProps) => {
           <img
             width={300}
             height={300}
-            src={albumImage?.url ?? '/img/no_subscription.webp'}
+            // 画像用意が面倒なのでアイコンで (APIv1現在ライブラリならローカルは含まないので使われることは無いはず)
+            src={albumImage?.url ?? '/apple-touch-icon.png'}
             alt={track?.album.name ?? ''}
             loading={loading}
             className="w-full"
