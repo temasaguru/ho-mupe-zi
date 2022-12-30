@@ -1,7 +1,6 @@
 import { constants } from 'http2';
 import { nanoid } from 'nanoid';
 import { SpotifyLibraryJSON } from '@/application/interfaces/json/spotify/Library';
-import { SpotifyPlaylistJSON } from '@/application/interfaces/json/spotify/Playlist';
 import { SpotifyCurrentlyPlayingJSON } from '@/application/interfaces/json/spotify/CurrentlyPlaying';
 import { SpotifyTokens } from '@/domains/entity/spotify/Tokens';
 import {
@@ -14,7 +13,6 @@ import {
   DatabaseKeys,
 } from '@/application/interfaces/IDBConnection';
 import { GetSpotifyLibraryInput } from '@/application/interfaces/inputs/GetSpotifyLibraryInput';
-import { GetSpotifyPlaylistInput } from '@/application/interfaces/inputs/GetSpotifyPlaylistInput';
 import { ISpotifyAPI } from '@/application/interfaces/ISpotifyAPI';
 import { UpdateSpotifyTokenInput } from '@/application/interfaces/inputs/UpdateSpotifyTokenInput';
 import { serverEnv } from '@/drivers/env/ServerEnv';
@@ -192,8 +190,6 @@ export interface SpotifyLibraryResponse {
   total: number;
 }
 
-export interface SpotifyPlaylistResponse extends SpotifyLibraryResponse {}
-
 /**
  * 認証系APIのレスポンス
  */
@@ -277,16 +273,6 @@ export class SpotifyApiV1 implements ISpotifyAPI {
   private transformLibraryResponseToJSON(
     response: SpotifyLibraryResponse
   ): SpotifyLibraryJSON {
-    return {
-      tracks: response.items.map((item) =>
-        this.transformResponseTrackToJSONTrack(item.track)
-      ),
-    };
-  }
-
-  private transformPlaylistResponseToJSON(
-    response: SpotifyPlaylistResponse
-  ): SpotifyPlaylistJSON {
     return {
       tracks: response.items.map((item) =>
         this.transformResponseTrackToJSONTrack(item.track)
@@ -501,42 +487,6 @@ export class SpotifyApiV1 implements ISpotifyAPI {
       const data = (await res.json()) as SpotifyLibraryResponse;
       if (res.ok && data) {
         const transformed = this.transformLibraryResponseToJSON(data);
-        return transformed;
-      }
-      return null;
-    };
-
-    switch (res.status) {
-      case constants.HTTP_STATUS_UNAUTHORIZED:
-        // トークン有効期限切れ
-        await this.refreshAndFetchData(fetchData);
-        return null;
-      case constants.HTTP_STATUS_OK:
-        return await fetchData();
-      default:
-        return null;
-    }
-  };
-
-  /**
-   * プレイリストを取得する
-   * @see https://developer.spotify.com/documentation/web-api/reference/#/operations/get-playlists-tracks
-   */
-  public getPlaylist = async ({
-    playlistId,
-    limit,
-    offset = 0,
-  }: GetSpotifyPlaylistInput): Promise<SpotifyPlaylistJSON | null> => {
-    const query = new URLSearchParams();
-    query.append('limit', limit.toString());
-    query.append('offset', offset.toString());
-    const res = await this.fetch(
-      `/playlists/${playlistId}/tracks?` + query.toString()
-    );
-    const fetchData = async () => {
-      const data = (await res.json()) as SpotifyPlaylistResponse;
-      if (res.ok && data) {
-        const transformed = this.transformPlaylistResponseToJSON(data);
         return transformed;
       }
       return null;

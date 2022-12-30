@@ -27,11 +27,10 @@ const Library = () => {
         }
       />
       <div className="flex w-full flex-wrap">
-        {spotifyLibrary?.tracks?.map((track, n) => (
+        {spotifyLibrary?.tracks?.map((track) => (
           <TrackInfo
             key={track.id}
             track={track}
-            n={n}
             open={track.id === openedTrackId}
             onClick={() =>
               // 選択中のトラックをクリックで選択解除

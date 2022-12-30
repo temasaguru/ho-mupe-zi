@@ -62,6 +62,10 @@ https://tech.nri-net.com/entry/react_hook_form_and_yup
 
 https://zenn.dev/yuitosato/articles/292f13816993ef
 
+### GitHub API
+
+https://zenn.dev/e_chan1007/articles/6eeb84f5ce2ef7
+
 ---
 
 <details><summary>◀</summary><div>▶▲　　　ん？<br><br>...<br><br>...<br><br>...<br><br><br>▼◀<br>▶▲　　<i>S t a r   A l l i a n c e</i><br><br><br><br><br><br><br><br><br><strike>スターアライアンスの三角は5つだろ！</strike></div></details>

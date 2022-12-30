@@ -17,6 +17,10 @@ export const serverEnv = {
       SPOTIFY_CLIENT_ID: str({}),
       SPOTIFY_CLIENT_SECRET: str({}),
       /**
+       * Markdown取得用
+       */
+      GITHUB_PERSONAL_ACCESS_TOKEN: str({}),
+      /**
        * `@upstash/redis`用
        */
       UPSTASH_REDIS_REST_URL: url({}),
