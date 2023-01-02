@@ -14,13 +14,29 @@ import ExternalMarkdownRenderer from '@/drivers/views/components/markdown/Extern
 import CurrentlyPlaying from '@/drivers/views/components/spotify/CurrentlyPlaying';
 import Container from '@/drivers/views/components/common/Container';
 import DefaultHeader from '@/drivers/views/components/layout/DefaultHeader';
+import { clientEnv } from '@/drivers/env/ClientEnv';
 
+/**
+ * README.md なのでGitHubのプロフィールページに出るやつ
+ */
 const TRPC_INPUT_MARKDOWN_PROFILE: GetMarkdownContentInput = {
   source: 'github',
   owner: 'temasaguru',
   repo: 'temasaguru',
   branch: 'main',
   path: 'README.md',
+};
+
+/**
+ * プロフィール本文は、あえてREADMEではないファイルに書く
+ */
+const TRPC_INPUT_MARKDOWN_PROFILE_2: GetMarkdownContentInput = {
+  source: 'github',
+  owner: 'temasaguru',
+  repo: 'temasaguru',
+  branch: 'main',
+  // コンポーネントでも使うので`clientEnv`
+  path: clientEnv.PROFILE_MARKDOWN_FILENAME,
 };
 
 export const getStaticProps = async () => {
@@ -30,6 +46,7 @@ export const getStaticProps = async () => {
     transformer: SuperJSON,
   });
   await ssg.markdown.getMarkdownHTML.prefetch(TRPC_INPUT_MARKDOWN_PROFILE);
+  await ssg.markdown.getMarkdownHTML.prefetch(TRPC_INPUT_MARKDOWN_PROFILE_2);
   await ssg.spotify.spotifyLibrary.prefetch({
     limit: serverEnv.SPOTIFY_LIBRARY_LIMIT,
   });
@@ -50,14 +67,17 @@ const Home: NextPageWithLayout<Props> = () => {
         <title>{SITE_NAME}</title>
         <meta name="description" content={DESCRIPTION}></meta>
       </Head>
-      <Container className="min-h-screen">
-        <ExternalMarkdownRenderer input={TRPC_INPUT_MARKDOWN_PROFILE} />
-      </Container>
-      <nav aria-label="ナビゲーション">
-        <DefaultHeader />
-      </nav>
-      <Container className="mb-8">
-        <CurrentlyPlaying />
+      <div className="flex min-h-screen w-screen flex-col items-center sm:flex-row">
+        <Container className="h-screen grow sm:h-auto">
+          <ExternalMarkdownRenderer input={TRPC_INPUT_MARKDOWN_PROFILE} />
+        </Container>
+        <div>
+          <CurrentlyPlaying />
+        </div>
+      </div>
+      <DefaultHeader />
+      <Container className="py-8">
+        <ExternalMarkdownRenderer input={TRPC_INPUT_MARKDOWN_PROFILE_2} />
       </Container>
       <Library />
     </div>

@@ -13,7 +13,7 @@ const AlbumArt = ({ loading = 'lazy', track, hasError }: AlbumArtProps) => {
    */
   const albumImage = track?.album.image;
   return (
-    <div>
+    <div className="h-[300px] w-[300px]">
       {track ? (
         <>
           {/* 公式やDiscordの埋め込みと同様、SpotifyのCDNから直接表示 再キャッシュはしない */}
@@ -21,7 +21,7 @@ const AlbumArt = ({ loading = 'lazy', track, hasError }: AlbumArtProps) => {
           <img
             width={300}
             height={300}
-            // 画像用意が面倒なのでアイコンで (APIv1現在ライブラリならローカルは含まないので使われることは無いはず)
+            // ローカルの場合はあけたみ
             src={albumImage?.url ?? '/apple-touch-icon.png'}
             alt={track?.album.name ?? ''}
             loading={loading}
