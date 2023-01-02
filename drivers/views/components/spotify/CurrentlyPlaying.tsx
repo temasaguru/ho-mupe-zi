@@ -14,7 +14,7 @@ const CurrentlyPlaying = () => {
 
   const { data: result, error, isLoading, refetch } = query;
   return (
-    <div className="flex w-[320px] flex-col gap-y-4 p-5 sm:rounded-l-xl sm:bg-gray-100 sm:shadow-xl">
+    <div className="flex w-[320px] flex-col gap-y-4 p-5 sm:rounded-l-xl sm:bg-gray-100 sm:shadow-xl sm:dark:bg-gray-900">
       <div className="text-xl font-black sm:text-2xl">{`Now playing ${
         result?.track?.is_local ? 'locally' : 'on Spotify'
       }:`}</div>
