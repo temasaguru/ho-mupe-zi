@@ -20,7 +20,11 @@ const CurrentlyPlaying = () => {
       }:`}</div>
       <div className="flex flex-col items-center gap-y-3">
         <div className="group relative h-full w-full max-w-[300px] grow-0 overflow-hidden rounded-xl">
-          <AlbumArt track={result?.track ?? null} hasError={error !== null} />
+          <AlbumArt
+            track={result?.track ?? null}
+            hasError={error !== null}
+            isCurrentlyPlayingComponent={true}
+          />
         </div>
         <div className="relative flex w-full grow flex-col items-start gap-x-8 gap-y-4">
           <MusicInfo track={result?.track ?? null} hasError={error !== null} />
