@@ -7,6 +7,10 @@ import { GetMarkdownContentInput } from '@/application/interfaces/inputs/GetMark
 const ExternalMarkdownRenderer = ({
   input,
 }: {
+  /**
+   * あらかじめページ側でインプットを定義することで
+   * getStaticProps等でプリフェッチに使える
+   */
   input: GetMarkdownContentInput;
 }) => {
   const { data, error } = trpc.markdown.getMarkdownHTML.useQuery(input, {
@@ -19,7 +23,8 @@ const ExternalMarkdownRenderer = ({
   if (data)
     return (
       <div
-        className="prose xl:prose-xl"
+        // `prose-invert`ってわかりづらくね？なんで`prose-dark`じゃないんだ
+        className="prose dark:prose-invert xl:prose-xl"
         dangerouslySetInnerHTML={{ __html: data }}
       />
     );
