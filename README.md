@@ -22,19 +22,44 @@
 
 PRにVercel Botがコメントを付けるとトリガーされ、LighthouseでプレビューURLを分析します。
 
-## 環境変数
+## 開発環境
+
+### 前提
+
+- [プロフィールリポジトリ](https://github.com/temasaguru/temasaguru)に以下のMarkdownがあること
+  - `README.md`
+  - 任意の場所に設置されたプロフィール本文のmdファイル
+- 上記リポジトリを読める状態のGitHub Personal Access Token (Classic)があること
+- UpstashにRedisを設置していること
+- Spotify開発者向けサイトでOAuthの設定をしていること
+
+### 必須の環境変数
 
 |値|内容|
 |---|---|
 |NEXTAUTH_URL|デプロイ先のURL `https://`から|
 |NEXTAUTH_SECRET|`openssl rand 16 -hex`|
-|SPOTIFY_CLIENT_ID|potify OAuthクライアントID|
+|SPOTIFY_CLIENT_ID|Spotify OAuthクライアントID|
 |SPOTIFY_CLIENT_SECRET|Spotify OAuthクライアントシークレット|
 |SIGNIN_ALLOWED_EMAILS|Spotifyメアド。俺しかログインできなくしろ|
 |UPSTASH_REDIS_REST_URL|UpstashのRedisのエンドポイント|
 |UPSTASH_REDIS_REST_TOKEN|UpstashのRedisのAPIトークン|
 |ENCRYPTION_KEY|`openssl rand 16 -hex` (これ変えるとトークン保存し直しになるので注意)|
 |REVALIDATE_SECONDS|ライブラリのキャッシュ有効期限秒|
+|GITHUB_PERSONAL_ACCESS_TOKEN|[プロフィールリポジトリ](https://github.com/temasaguru/temasaguru)を読める状態のGitHub Personal Access Token (Classic)|
+|NEXT_PUBLIC_PROFILE_MARKDOWN_FILENAME|[プロフィールリポジトリ](https://github.com/temasaguru/temasaguru)のうち自己紹介に相当するMDのファイル名|
+
+### 任意の環境変数
+
+|値|内容|デフォルト
+|---|---|---|
+|NEXT_PUBLIC_SPOTIFY_LIBRARY_LIMIT|Spotifyライブラリの取得上限数|`30`|
+
+### 起動
+
+```sh
+yarn dev
+```
 
 ## Special Thanks
 

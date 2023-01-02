@@ -2,6 +2,7 @@ import { envsafe, num, str, url } from 'envsafe';
 
 /**
  * クライアントで使う環境変数
+ * `serverEnv`の定義ではスプレッド構文で拡張しろ
  */
 export const clientEnv = envsafe(
   {
@@ -22,6 +23,9 @@ export const clientEnv = envsafe(
       input: process.env.NEXT_PUBLIC_SPOTIFY_LIBRARY_LIMIT,
       allowEmpty: true,
       default: 30,
+    }),
+    PROFILE_MARKDOWN_FILENAME: str({
+      input: process.env.NEXT_PUBLIC_PROFILE_MARKDOWN_FILENAME,
     }),
   },
   {
