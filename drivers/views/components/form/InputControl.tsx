@@ -21,7 +21,7 @@ const InputBase = forwardRef<HTMLInputElement, InputBaseProps>(
     <div className="w-full">
       <label>{label}</label>
       <input
-        className={twMerge('input-bordered input w-full max-w-xs', className)}
+        className={twMerge('w-full max-w-xs border border-gray-500', className)}
         ref={ref}
         {...props}
       />
@@ -59,7 +59,7 @@ const InputControl = <T extends FieldValues>({
               // https://github.com/react-hook-form/react-hook-form/discussions/8068#discussioncomment-2415789
               onChange(+e.target.value);
             } else {
-              onChange([e]);
+              onChange(e);
             }
           }}
           type={type}
