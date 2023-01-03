@@ -8,6 +8,7 @@ import { NextPageWithLayout } from '@/drivers/next';
 import UserInfoSmall from '@/drivers/views/components/auth/UserInfoSmall';
 import DashboardLayout from '@/drivers/views/components/layout/DashboardLayout';
 import { SITE_NAME } from '@/drivers/views/components/const';
+import RevalidateForm from '@/drivers/views/components/next/RevalidateForm';
 
 export const getServerSideProps = async () => {
   const ssg = createProxySSGHelpers({
@@ -23,7 +24,7 @@ export const getServerSideProps = async () => {
 };
 
 type Props = InferGetServerSidePropsType<typeof getServerSideProps>;
-const Dashboard: NextPageWithLayout<Props> = () => {
+const DashboardPage: NextPageWithLayout<Props> = () => {
   return (
     <div>
       <Head>
@@ -34,10 +35,11 @@ const Dashboard: NextPageWithLayout<Props> = () => {
         <title>{`${SITE_NAME} dashboard`}</title>
       </Head>
       <UserInfoSmall />
+      <RevalidateForm />
     </div>
   );
 };
 
-Dashboard.getLayout = (page) => <DashboardLayout>{page}</DashboardLayout>;
+DashboardPage.getLayout = (page) => <DashboardLayout>{page}</DashboardLayout>;
 
-export default Dashboard;
+export default DashboardPage;

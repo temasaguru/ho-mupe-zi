@@ -2,6 +2,7 @@
  * このファイルはtRPCに必要なのでリネームしない
  */
 import * as trpcNext from '@trpc/server/adapters/next';
+import { createContext } from '@/drivers/trpc/trpc';
 import { appRouter } from '@/drivers/trpc/routers/_app';
 
 /**
@@ -9,5 +10,5 @@ import { appRouter } from '@/drivers/trpc/routers/_app';
  */
 export default trpcNext.createNextApiHandler({
   router: appRouter,
-  createContext: () => ({}),
+  createContext,
 });
