@@ -24,6 +24,9 @@ export const clientEnv = envsafe(
       allowEmpty: true,
       default: 30,
     }),
+    HERO_MARKDOWN_FILENAME: str({
+      input: process.env.NEXT_PUBLIC_HERO_MARKDOWN_FILENAME,
+    }),
     PROFILE_MARKDOWN_FILENAME: str({
       input: process.env.NEXT_PUBLIC_PROFILE_MARKDOWN_FILENAME,
     }),

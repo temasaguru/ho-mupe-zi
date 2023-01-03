@@ -17,20 +17,20 @@ import DefaultHeader from '@/drivers/views/components/layout/DefaultHeader';
 import { clientEnv } from '@/drivers/env/ClientEnv';
 
 /**
- * README.md なのでGitHubのプロフィールページに出るやつ
+ * ファーストビューにでかでかと出す文章
  */
-const TRPC_INPUT_MARKDOWN_PROFILE: GetMarkdownContentInput = {
+const TRPC_INPUT_MARKDOWN_HERO: GetMarkdownContentInput = {
   source: 'github',
   owner: 'temasaguru',
   repo: 'temasaguru',
   branch: 'main',
-  path: 'README.md',
+  path: clientEnv.HERO_MARKDOWN_FILENAME,
 };
 
 /**
  * プロフィール本文は、あえてREADMEではないファイルに書く
  */
-const TRPC_INPUT_MARKDOWN_PROFILE_2: GetMarkdownContentInput = {
+const TRPC_INPUT_MARKDOWN_PROFILE: GetMarkdownContentInput = {
   source: 'github',
   owner: 'temasaguru',
   repo: 'temasaguru',
@@ -45,8 +45,8 @@ export const getStaticProps = async () => {
     ctx: await createContext(),
     transformer: SuperJSON,
   });
+  await ssg.markdown.getMarkdownHTML.prefetch(TRPC_INPUT_MARKDOWN_HERO);
   await ssg.markdown.getMarkdownHTML.prefetch(TRPC_INPUT_MARKDOWN_PROFILE);
-  await ssg.markdown.getMarkdownHTML.prefetch(TRPC_INPUT_MARKDOWN_PROFILE_2);
   await ssg.spotify.spotifyLibrary.prefetch({
     limit: serverEnv.SPOTIFY_LIBRARY_LIMIT,
   });
@@ -69,7 +69,7 @@ const Home: NextPageWithLayout<Props> = () => {
       </Head>
       <div className="flex min-h-screen w-screen flex-col items-center sm:flex-row">
         <Container className="h-screen grow sm:h-auto">
-          <ExternalMarkdownRenderer input={TRPC_INPUT_MARKDOWN_PROFILE} />
+          <ExternalMarkdownRenderer input={TRPC_INPUT_MARKDOWN_HERO} />
         </Container>
         <div>
           <CurrentlyPlaying />
@@ -77,7 +77,7 @@ const Home: NextPageWithLayout<Props> = () => {
       </div>
       <DefaultHeader />
       <Container className="py-8">
-        <ExternalMarkdownRenderer input={TRPC_INPUT_MARKDOWN_PROFILE_2} />
+        <ExternalMarkdownRenderer input={TRPC_INPUT_MARKDOWN_PROFILE} />
       </Container>
       <Library />
     </div>

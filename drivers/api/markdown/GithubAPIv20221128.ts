@@ -31,6 +31,8 @@ export class GithubAPIv20221128 implements IMarkdownAPI {
           owner,
           repo,
           tree_sha: latestCommit.sha,
+          /** ファイルをディレクトリに入れた場合これが必須 */
+          recursive: 'true',
         })
       ).data.tree;
       const blob = (

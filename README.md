@@ -47,6 +47,7 @@ PRにVercel Botがコメントを付けるとトリガーされ、Lighthouseで�
 |ENCRYPTION_KEY|`openssl rand 16 -hex` (これ変えるとトークン保存し直しになるので注意)|
 |REVALIDATE_SECONDS|ライブラリのキャッシュ有効期限秒|
 |GITHUB_PERSONAL_ACCESS_TOKEN|[プロフィールリポジトリ](https://github.com/temasaguru/temasaguru)を読める状態のGitHub Personal Access Token (Classic)|
+|NEXT_PUBLIC_HERO_MARKDOWN_FILENAME|[プロフィールリポジトリ](https://github.com/temasaguru/temasaguru)のうちヒーロー部分に相当するMDのファイル名|
 |NEXT_PUBLIC_PROFILE_MARKDOWN_FILENAME|[プロフィールリポジトリ](https://github.com/temasaguru/temasaguru)のうち自己紹介に相当するMDのファイル名|
 
 ### 任意の環境変数
