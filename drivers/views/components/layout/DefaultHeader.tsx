@@ -9,7 +9,7 @@ const DefaultHeader = () => {
   return (
     <nav
       aria-label="ナビゲーション"
-      className="sticky top-0 left-0 z-50 flex h-16 items-center justify-center gap-2 border-y border-gray-300 bg-white/50 py-3 backdrop-blur-lg contrast-more:border-black contrast-more:bg-white dark:bg-stone-800/50 dark:contrast-more:border-white dark:contrast-more:bg-black"
+      className="sticky bottom-0 left-0 z-50 flex h-16 items-center justify-center gap-2 border-y border-gray-300 bg-white/50 py-3 backdrop-blur-lg contrast-more:border-black contrast-more:bg-white dark:bg-stone-800/50 dark:contrast-more:border-white dark:contrast-more:bg-black"
     >
       <IconHoverButton
         href={`https://twitter.com/${TWITTER_USERNAME}`}

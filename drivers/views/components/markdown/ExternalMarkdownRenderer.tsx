@@ -23,8 +23,10 @@ const ExternalMarkdownRenderer = ({
   if (data)
     return (
       <div
-        // `prose-invert`ってわかりづらくね？なんで`prose-dark`じゃないんだ
-        className="prose dark:prose-invert xl:prose-xl"
+        /**
+         * - w-full: コンテナのpaddingを無視させないために必要
+         */
+        className="prose w-full overflow-x-scroll dark:prose-invert xl:prose-xl"
         dangerouslySetInnerHTML={{ __html: data }}
       />
     );

@@ -62,25 +62,24 @@ type Props = InferGetStaticPropsType<typeof getStaticProps>;
 
 const Home: NextPageWithLayout<Props> = () => {
   return (
-    <div>
+    <>
       <Head>
         <title>{SITE_NAME}</title>
         <meta name="description" content={DESCRIPTION}></meta>
       </Head>
-      <div className="flex min-h-screen w-screen flex-col items-center sm:flex-row">
+      {/* この要素にwidthを指定するな！はみ出しの原因になる */}
+      <div className="flex min-h-screen flex-col items-center sm:flex-row">
         <Container className="h-screen grow sm:h-auto">
           <ExternalMarkdownRenderer input={TRPC_INPUT_MARKDOWN_HERO} />
         </Container>
-        <div>
-          <CurrentlyPlaying />
-        </div>
+        <CurrentlyPlaying />
       </div>
       <DefaultHeader />
       <Container className="py-8">
         <ExternalMarkdownRenderer input={TRPC_INPUT_MARKDOWN_PROFILE} />
       </Container>
       <Library />
-    </div>
+    </>
   );
 };
 
