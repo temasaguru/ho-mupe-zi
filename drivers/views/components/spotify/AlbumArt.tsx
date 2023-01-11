@@ -40,7 +40,7 @@ const AlbumArt = ({
           <div className="m-auto p-4">取得失敗</div>
         </div>
       ) : (
-        <div className="flex h-full w-full bg-gray-100 text-center shadow-xl">
+        <div className="flex h-full w-full bg-gray-100 text-center text-black shadow-xl">
           <div className="m-auto p-4">Loading...</div>
         </div>
       )}

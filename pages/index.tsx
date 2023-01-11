@@ -27,18 +27,6 @@ const TRPC_INPUT_MARKDOWN_HERO: GetMarkdownContentInput = {
   path: clientEnv.HERO_MARKDOWN_FILENAME,
 };
 
-/**
- * プロフィール本文は、あえてREADMEではないファイルに書く
- */
-const TRPC_INPUT_MARKDOWN_PROFILE: GetMarkdownContentInput = {
-  source: 'github',
-  owner: 'temasaguru',
-  repo: 'temasaguru',
-  branch: 'main',
-  // コンポーネントでも使うので`clientEnv`
-  path: clientEnv.PROFILE_MARKDOWN_FILENAME,
-};
-
 export const getStaticProps = async () => {
   const ssg = createProxySSGHelpers({
     router: appRouter,
@@ -46,7 +34,6 @@ export const getStaticProps = async () => {
     transformer: SuperJSON,
   });
   await ssg.markdown.getMarkdownHTML.prefetch(TRPC_INPUT_MARKDOWN_HERO);
-  await ssg.markdown.getMarkdownHTML.prefetch(TRPC_INPUT_MARKDOWN_PROFILE);
   await ssg.spotify.spotifyLibrary.prefetch({
     limit: serverEnv.SPOTIFY_LIBRARY_LIMIT,
   });
@@ -75,9 +62,6 @@ const Home: NextPageWithLayout<Props> = () => {
         <CurrentlyPlaying />
       </div>
       <DefaultHeader />
-      <Container className="py-8">
-        <ExternalMarkdownRenderer input={TRPC_INPUT_MARKDOWN_PROFILE} />
-      </Container>
       <Library />
     </>
   );

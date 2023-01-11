@@ -26,7 +26,7 @@ const ExternalMarkdownRenderer = ({
         /**
          * - w-full: コンテナのpaddingを無視させないために必要
          */
-        className="prose w-full overflow-x-scroll dark:prose-invert xl:prose-xl"
+        className="no-scrollbar prose w-full overflow-x-scroll dark:prose-invert xl:prose-xl"
         dangerouslySetInnerHTML={{ __html: data }}
       />
     );
